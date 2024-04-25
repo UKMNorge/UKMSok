@@ -39,6 +39,11 @@ class UKMSok extends Modul {
             'wp_ajax_UKMsok_ajax',
             ['UKMSok', 'ajax']
         );
+
+        add_action(
+            'admin_print_styles',
+            ['UKMSok', 'scripts_and_styles']
+        );
     }
 
     /**
@@ -51,7 +56,8 @@ class UKMSok extends Modul {
     }
 
     public static function scripts_and_styles() {
-        
+        wp_enqueue_style('UKMSokVueStyle', plugin_dir_url(__FILE__) . '/client/dist/assets/build.css');
+        wp_enqueue_script('UKMSokVueJs', plugin_dir_url(__FILE__) . '/client/dist/assets/build.js','','',true);
     }
 }
 
