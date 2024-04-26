@@ -20,21 +20,7 @@ class UKMSok extends Modul {
     public static $path_plugin = null;
 
 
-    // Add a custom item to the admin bar
-    public static function custom_admin_bar_item($wp_admin_bar){
-        // Add your HTML element here
-        $wp_admin_bar->add_node(array(
-            'id'    => 'custom-item',
-            'title' => '<div id="searchArrSysVue">a</div>',
-            'meta'  => array(
-                'title' => __('Custom Item'), // Title attribute for the item
-            ),
-        ));
-    }
-
     public static function hook() {
-        add_action('admin_bar_menu', array(__CLASS__, 'custom_admin_bar_item'), 999);
-
         add_action(
             'wp_ajax_UKMsok_ajax',
             ['UKMSok', 'ajax']
