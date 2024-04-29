@@ -53,7 +53,7 @@ class UKMSok extends Modul {
 
     public static function renderAdminPage() {
         ?>
-            <div id="UKMSokAdmin">aaw</div>
+            <div id="UKMSokAdmin"></div>
         <?php
 
         wp_enqueue_style('UKMSokAdminVueStyle', plugin_dir_url(__FILE__) . '/client/client_admin/dist/assets/build.css');

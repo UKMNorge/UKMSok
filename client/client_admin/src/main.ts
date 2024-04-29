@@ -23,4 +23,4 @@ var director = new Director();
 
 app.use(hljsVuePlugin);
 
-app.mount("#app");
+app.mount("#UKMSokAdmin");
