@@ -77,6 +77,9 @@ export default class SearchArrSys extends Vue {
 </style>
 
 <style scoped>
+.main-div {
+    margin-top: 1px !important;
+}
 .main-div, .search-div, .search-input-arr-sys {
     width: 220px !important;
     transition: .15s width !important;
