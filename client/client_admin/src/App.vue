@@ -1,28 +1,5 @@
 <template>
-    <div :class="active || searchInput.length > 0 ? 'active' : ''" class="as-container main-div as-margin-top-space-3 as-display-flex">
-        <div class="as-display-flex search-div">
-            <input :class="results.length > 0 ? 'results' : ''" class="search-input-arr-sys" @click="searchInputChanged()" @focus="() => active=true" @blur="() => active=false" v-model="searchInput" @input="searchInputChanged()" placeholder="Søk arrangørsystemet">
-            <div class="button-icon">
-                <button v-show="searchInput.length < 1" class="as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-space-2" @click="searchInputChanged()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path></svg>
-                </button>
-                <button v-show="searchInput.length > 0" class="reset-all as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-space-2" @click="resetAll()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path></svg>
-                </button>
-            </div>
-        </div>
-        <div v-show="results.length > 0" class="results-div">
-            <div class="result-item as-btn-hover-default" v-for="result in results">
-                <a class="click-result" :href="result.siteUrl">
-                    <p class="title">{{ result.title }}</p>
-                    <span class="description">{{ result.description }}</span>
-                </a>
-            </div>
-        </div>
-        <div v-show="results.length > 0" class="search-results-overlay" @click="resetSearch()">
-
-        </div>
-    </div>
+    <div>Hellooo</div>
 </template>
 
 <script lang="ts">
