@@ -4,9 +4,9 @@
             <h2>Søk indekser og nøkkelord</h2>
             <ul class="content-indexes">
                 <li v-for="index in indexes" :key="index.id">
-                    <input v-model="index.name">
+                    <input v-model="index.title">
                     <input v-model="index.description">
-                    <input v-model="index.link">
+                    <input v-model="index.siteUrl">
                     <button @click="saveIndex(index.id)" class="btn-style-keyword as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-left-space-1" style="" data-form-type="">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="-1 -2 20 25" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M5 21h14a2 2 0 0 0 2-2V8l-5-5H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zM7 5h4v2h2V5h2v4H7V5zm0 8h10v6H7v-6z"></path></svg>
                     </button>
@@ -40,20 +40,42 @@
 </template>
 
 <script lang="ts">
+import { SPAInteraction } from 'ukm-spa/SPAInteraction';
+
+var ajaxurl : string = (<any>window).ajaxurl; // Kommer fra global
+const spaInteraction = new SPAInteraction(null, ajaxurl);
+
 export default {
     data() {
         return {
             indexes: [
-                { id: 1, name: 'Index 1', description: 'test description', link: '/tana/wp-content/', keywords: [{ id: 1, name: 'Keyword 1', weight: 1 }, { id: 5, name: 'Keyword Zeta', weight: 2 }, { id: 5, name: 'Gentius', weight: 15 }] },
-                { id: 2, name: 'Index 2', description: '', link: '', keywords: [{ id: 2, name: 'Keyword 2', weight: 3 }] },
-                { id: 3, name: 'Index 3', description: '', link: '', keywords: [{ id: 3, name: 'Keyword 3', weight: 4 }] },
+                // { id: 1, name: 'Index 1', description: 'test description', link: '/tana/wp-content/', keywords: [{ id: 1, name: 'Keyword 1', weight: 1 }, { id: 5, name: 'Keyword Zeta', weight: 2 }, { id: 5, name: 'Gentius', weight: 15 }] },
+                // { id: 2, name: 'Index 2', description: '', link: '', keywords: [{ id: 2, name: 'Keyword 2', weight: 3 }] },
+                // { id: 3, name: 'Index 3', description: '', link: '', keywords: [{ id: 3, name: 'Keyword 3', weight: 4 }] },
             ],
             newIndex: { id: -1, name: '', description: '', link: '', keywords: [] },
             newKeyword: {id : -1, name: '', weight: 1},
             currentIdNewKeyword: -1
         };
     },
+    mounted() {
+        this.fetchData();
+    },
     methods: {
+        async fetchData() {
+            var data : any = {
+            action: 'UKMsok_ajax',
+            controller: 'getIndexes',
+            };
+
+            var response = await spaInteraction.runAjaxCall('/', 'POST', data);
+            console.log(response);
+            
+            for(var contentIndex : any of response.results) {
+                this.indexes.push(contentIndex);
+            }
+
+        },
         addIndex() {
             if (this.newIndex.name.trim() !== '') {
                 const newIndex = {
