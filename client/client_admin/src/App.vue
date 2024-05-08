@@ -95,25 +95,18 @@ export default {
             this.indexes = this.indexes.filter((index) => index.id !== indexId);
         },
         addKeyword(indexId : String, parent : any) {
-            var kw = new Keyword(null, 'testNavn', 1, parent);
-            // if(this.currentIdNewKeyword == '-1') {
-            //     this.currentIdNewKeyword = indexId;
-            //     return;
-            // }
+            if(this.currentIdNewKeyword == '-1') {
+                this.currentIdNewKeyword = indexId;
+                return;
+            }
 
-            // console.log(this.newKeyword.name);
-            // if (this.newKeyword.name.trim() !== '') {
-            //     const newKeyword = {
-            //         id: this.indexes[indexId - 1].keywords.length + 1,
-            //         name: this.newKeyword.name.trim(),
-            //         weight: this.newKeyword.weight,
-            //     };
-            //     this.indexes[indexId - 1].keywords.push(newKeyword);
-            //     this.newKeyword = { id: -1, name: '', weight: 1 };
-                
-            //     this._addKeyword(newKeyword);
-            //     this.currentIdNewKeyword = -1;
-            // }
+            var kw = new Keyword(null, this.newKeyword.name, this.newKeyword.weight, parent);
+
+            parent.addKeyword(kw);
+
+            this.newKeyword.name = '';
+            this.newKeyword.weight = 1;
+            this.currentIdNewKeyword = '-1';
         },
         async _addKeyword(keyword : any) {
             
