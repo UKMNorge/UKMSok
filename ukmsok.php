@@ -56,6 +56,7 @@ class UKMSok extends Modul {
             <div id="UKMSokAdmin"></div>
         <?php
 
+        wp_enqueue_style('UKMSokAdminMIDIcons', 'https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css');
         wp_enqueue_style('UKMSokAdminVueStyle', plugin_dir_url(__FILE__) . '/client/client_admin/dist/assets/build.css');
         wp_enqueue_script('UKMSokAdminVueJs', plugin_dir_url(__FILE__) . '/client/client_admin/dist/assets/build.js','','',true);
     }

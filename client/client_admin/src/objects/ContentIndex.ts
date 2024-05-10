@@ -40,7 +40,7 @@ class ContentIndex {
     public removeKeyword(keywordId : String) : boolean {
         for(var kw of this.getKeywords()) {
             if(kw.id == keywordId) {
-                this.keywords = this.keywords.filter(k => k.id !== keywordId);
+                // this.keywords = this.keywords.filter(k => k.id !== keywordId);
                 kw.deleteKeyword();
                 return true;
             }

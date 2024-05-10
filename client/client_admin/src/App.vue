@@ -2,35 +2,62 @@
     <div>
         <div class="content-index">
             <h2>Søk indekser og nøkkelord</h2>
-            <ul class="content-indexes">
-                <li v-for="index in indexes">
-                    <input v-model="index.title">
-                    <input v-model="index.description">
-                    <input v-model="index.siteUrl">
-                    <button @click="saveIndex(index.id)" class="btn-style-keyword as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-left-space-1" style="" data-form-type="">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="-1 -2 20 25" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M5 21h14a2 2 0 0 0 2-2V8l-5-5H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2zM7 5h4v2h2V5h2v4H7V5zm0 8h10v6H7v-6z"></path></svg>
-                    </button>
-                        
-                    <button @click="removeIndex(index.id)" class="btn-style-keyword as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-left-space-1" style="" data-form-type=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgb(0, 0, 0);"><path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path></svg></button>
-                    <ul class="keywords as-margin-top-space-2 as-margin-bottom-space-2">
-                        <li class="on-hover-displ" v-for="keyword in index.getKeywords()">
-                            <span class="keyword-name">{{ keyword.name }}</span>
-                            <span class="weight-value">Weight: {{ keyword.weight }}</span> <!-- Added weight property -->
-                            <button @click="removeKeyword(keyword)" class="btn-style-keyword as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-left-space-1" style="" data-form-type=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgb(0, 0, 0);"><path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path></svg></button>
+            <div class="content-indexes as-container">
+                <div v-for="index in indexes">
+                    <div class="content-index-item as-card-1 as-padding-space-4">
+                        <h3 class="title">{{ index.title }}</h3>
+                        <div>
+                            <v-text-field v-model="index.siteUrl" label="URL" variant="outlined"></v-text-field>
+                            <v-text-field v-model="index.title" label="Tittel" variant="outlined"></v-text-field>
+                            <v-text-field v-model="index.description" label="Beskrivelse" variant="outlined"></v-text-field>
+                            <div>
+                                <v-btn class="as-margin-right-space-1" @click="saveIndex(index.id)" prepend-icon variant="tonal">
+                                    <v-icon>mdi-content-save</v-icon>
+                                    Lagre  
+                                </v-btn>
 
-                        </li>
-                        <li v-if="currentIdNewKeyword == index.id">
-                            <input type="text" v-model="newKeyword.name" placeholder="Enter new keyword" />
-                            <input type="number" v-model="newKeyword.weight" placeholder="Enter weight" /> <!-- Added weight input -->
-                            <p>awaa</p>
-                            <button @click="addKeyword(index.id, index)" class="btn-style-keyword add-icon as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-left-space-1" style="" data-form-type=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgb(0, 0, 0);"><path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path></svg></button>
-                        </li>
-                        <li v-else>
-                            <button @click="addKeyword(index.id, index)" class="btn-style-keyword add-icon as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-left-space-1" style="" data-form-type=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgb(0, 0, 0);"><path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path></svg></button>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+                                <v-btn @click="removeIndex(index.id)" prepend-icon variant="tonal">
+                                    <v-icon>mdi-delete</v-icon>
+                                    Slett  
+                                </v-btn>
+                            </div>
+                        </div>
+                        
+                        <div class="keywords as-margin-top-space-4">
+                            <h5>Nøkkelord:</h5>
+                        </div>
+                        <div class="keywords as-margin-top-space-1">
+                            <div v-for="keyword in index.getKeywords()">
+                                <v-chip class="as-margin-right-space-1" @click:close="removeKeyword(keyword)" closable>
+                                    <span class="kw-name">{{ keyword.name }}</span>
+                                    <span class="kw-weight">{{ keyword.weight }}</span>
+                                    <!-- <button @click="removeKeyword(keyword)" class="btn-style-keyword mini-remove as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-left-space-1" style="" data-form-type=""><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" style="fill: rgb(0, 0, 0);"><path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path></svg></button> -->
+                                </v-chip>
+                            </div>
+                            
+                            
+                            <div v-if="currentIdNewKeyword == index.id">
+                                <v-chip @click:close="closeKeywordInput()" closable>
+                                    <input type="text" v-model="newKeyword.name" placeholder="Keyword" />
+                                    <input min="1" max="100" type="number" v-model="newKeyword.weight" placeholder="Weight" />
+                                    <div class="as-padding-left-space-1">
+                                        <v-btn @click="addKeyword(index.id, index)" density="compact" variant="tonal" icon="mdi-plus"></v-btn>
+                                    </div>
+                                </v-chip>
+    
+                                <!-- <input type="text" v-model="newKeyword.name" placeholder="Enter new keyword" />
+                                <input type="number" v-model="newKeyword.weight" placeholder="Enter weight" />  -->
+                            </div>
+                            <div class="as-display-flex" v-else>
+                                <v-btn class="as-margin-auto" @click="addKeyword(index.id, index)" density="compact" icon variant="tonal">
+                                    <v-icon>mdi-plus</v-icon>
+                                </v-btn>
+                                <!-- <button @click="addKeyword(index.id, index)" class="btn-style-keyword add-icon as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-left-space-1" style="" data-form-type=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgb(0, 0, 0);"><path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path></svg></button> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="as-display-flex">
                 <input type="text" v-model="newIndex.name" placeholder="Enter new index name" />
                 <button @click="addIndex" class="btn-style-keyword add-icon as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-left-space-1" style="" data-form-type=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgb(0, 0, 0);"><path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path></svg></button>
@@ -108,6 +135,9 @@ export default {
             this.newKeyword.weight = 1;
             this.currentIdNewKeyword = '-1';
         },
+        closeKeywordInput() {
+            this.currentIdNewKeyword = '-1';
+        },
         async _addKeyword(keyword : any) {
             
             // var data : any = {
@@ -138,7 +168,7 @@ export default {
 </script>
 
 <style scoped>
-input {
+/* input {
     border-radius: var(--radius-normal) !important;
     border: none;
     background: var(--color-primary-grey-light);
@@ -146,7 +176,7 @@ input {
     margin: 8px !important;
     padding: 3px 12px !important;
     outline: none !important;
-}
+} */
 .content-index {
     margin-bottom: 20px;
 }
@@ -157,8 +187,6 @@ ul {
 }
 
 li {
-    display: flex;
-    align-items: center;
     margin-bottom: 10px;
 }
 
@@ -166,9 +194,7 @@ li span {
     margin-right: 10px;
 }
 
-input[type='text'] {
-    margin-right: 10px;
-}
+
 
 button {
     padding: 5px 10px;
@@ -177,11 +203,7 @@ button {
     border-bottom: solid 1px var(--color-primary-grey-light);
 }
 .keywords {
-    margin-left: 200px;
-}
-.keywords>li {
     display: flex;
-    align-items: center;
 }
 .weight-value {
     margin-right: 10px;
@@ -199,6 +221,12 @@ button {
     height: 24px !important;
     padding: 0px !important
 }
+.btn-style-keyword.mini-remove {
+    width: 18px !important;
+    height: 18px !important;
+
+}
+
 .on-hover-displ .btn-style-keyword {
     visibility: hidden;
     transition: .2s !important;
@@ -217,5 +245,21 @@ button {
     background: var(--color-primary-grey-medium) !important;
     border-color: var(--color-primary-grey-medium) !important;
     cursor: pointer;
+}
+.inputs-vuetif {
+    width: 100%;
+}
+.content-index-item {
+    max-width: 1200px;
+}
+.content-index-item .title {
+    margin-bottom: calc(2*var(--initial-space-box));
+}
+.kw-name {
+    font-weight: 400;
+    margin-right: calc(var(--initial-space-box)/2);
+}
+.kw-weight {
+    font-weight: 100;
 }
 </style>
