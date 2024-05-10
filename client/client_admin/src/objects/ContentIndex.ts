@@ -8,25 +8,74 @@ class ContentIndex {
     public title : String;
     public description : String;
     public siteUrl : String;
+    public context : String;
     private keywords : Array<Keyword> = [];
     private spaInteraction : typeof SPAInteraction = new SPAInteraction(null, ajaxurl);
 
 
 
-    constructor(id : String, title : String, description : String, siteUrl : String, keywordsList : Array<Keyword>) {
+    constructor(id : String|null, title : String, description : String, siteUrl : String, contextId : Number, keywordsList : Array<Keyword>) {
+        if(id == null) {
+            id = '-1';
+        }
+
         this.id = id;
         this.title = title;
         this.description = description;
         this.siteUrl = siteUrl;
 
-        if(id == null) {
-            this.createContentIndex();
-        }
+        this.context = this.getContextName(contextId);
+
+        // if(id == null) {
+        //     this.createContentIndex();
+        // }
 
         for(var kw of keywordsList) {
             this.keywords.push(new Keyword(kw.id, kw.name, kw.weight, this));
         }
         
+    }
+
+    private getContextName(contextId : Number) : String {
+        if(contextId == 1) {
+            return 'Min Side';
+        }
+        else if(contextId == 2) {
+            return 'Arrangement';
+        }
+        else if(contextId == 3) {
+            return 'Kommune';
+        }
+        else if(contextId == 4) {
+            return 'Kurs';
+        }
+        else if(contextId == 5) {
+            return 'Kategori';
+        }
+        else {
+            return 'Annet';
+        }
+    }
+
+    private getContextId(contextId : String) : Number {
+        if(contextId == 'Min Side') {
+            return 1;
+        }
+        else if(contextId == 'Arrangement') {
+            return 2;
+        }
+        else if(contextId == 'Kommune') {
+            return 3;
+        }
+        else if(contextId == 'Kurs') {
+            return 4;
+        }
+        else if(contextId == 'Kategori') {
+            return 5;
+        }
+        else {
+            return -1
+        }
     }
 
     public getKeywords() : Array<Keyword> {
@@ -56,24 +105,29 @@ class ContentIndex {
         this.runAjaxCall('UPDATE');
     }
 
-    private createContentIndex() : void {
-        this.runAjaxCall('CREATE');
+    public async createContentIndex() {
+        var response = await <any>this.runAjaxCall('CREATE');
+        this.id = response.results['id'];
     }
     
     private async runAjaxCall(method : String|null) : Promise<any> {
         var data : any = {
             action: 'UKMsok_ajax',
+            'title': this.title,
+            'description': this.description,
+            'site_url': this.siteUrl,
+            'context_id': this.getContextId(this.context),
         };
 
-        if(this.id == null) {
-            data.controller = 'createContentIndex';
+        if(method == 'CREATE') {
+            data.controller = 'contentIndexCreate';
         }
         else if(method == 'DELETE') {
-            data.controller = 'deleteContentIndex';
+            data.controller = 'contentIndexDelete';
             data.id = this.id;
         }
         else if(method == 'UPDATE'){
-            data.controller = 'updateContentIndex';
+            data.controller = 'contentIndexUpdate';
             data.id = this.id;
         }
 

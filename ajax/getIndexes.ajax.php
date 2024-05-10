@@ -11,15 +11,15 @@ $handleCall = new HandleAPICall([], [], ['GET', 'POST'], false);
 
 
 $retObjs = [];
-
 $results = ContentIndex::getAllWithKeywords();
-
 
 foreach($results as $contentIndex) {
     $retObjs[] = [
         'id' => $contentIndex->getId(),
         'title' => $contentIndex->getTitle(),
         'siteUrl' => $contentIndex->getSiteUrl(),
+        // 'contentType' => $contentIndex->getContentType(),
+        'contextId' => $contentIndex->getContextId(),
         'description' => $contentIndex->getDescription(),
         'keywords' => [],
     ];

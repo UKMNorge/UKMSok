@@ -4,29 +4,40 @@
             <h2>Søk indekser og nøkkelord</h2>
             <div class="content-indexes as-container">
                 <div v-for="index in indexes">
-                    <div class="content-index-item as-card-1 as-padding-space-4">
+                    <div class="content-index-item as-card-1 as-padding-space-4 as-margin-top-space-2">
                         <h3 class="title">{{ index.title }}</h3>
                         <div>
                             <v-text-field v-model="index.siteUrl" label="URL" variant="outlined"></v-text-field>
                             <v-text-field v-model="index.title" label="Tittel" variant="outlined"></v-text-field>
                             <v-text-field v-model="index.description" label="Beskrivelse" variant="outlined"></v-text-field>
+
+                            <v-autocomplete variant="outlined" label="Kontekst" v-model="index.context"
+                            :items="['Min Side', 'Arrangement']"
+                            ></v-autocomplete>
+
+
                             <div>
-                                <v-btn class="as-margin-right-space-1" @click="saveIndex(index.id)" prepend-icon variant="tonal">
+                                <v-btn v-if="index.id != null && index.id != '-1'" class="as-margin-right-space-1" @click="saveIndex(index.id)" prepend-icon variant="tonal">
                                     <v-icon>mdi-content-save</v-icon>
-                                    Lagre  
+                                    Lagre
                                 </v-btn>
 
-                                <v-btn @click="removeIndex(index.id)" prepend-icon variant="tonal">
+                                <v-btn v-else class="as-margin-right-space-1" @click="createIndex(index)" prepend-icon variant="tonal">
+                                    <v-icon>mdi-content-save</v-icon>
+                                    Opprett
+                                </v-btn>
+
+                                <v-btn v-if="index.id != null && index.id != '-1'" @click="removeIndex(index.id)" prepend-icon variant="tonal">
                                     <v-icon>mdi-delete</v-icon>
                                     Slett  
                                 </v-btn>
                             </div>
                         </div>
                         
-                        <div class="keywords as-margin-top-space-4">
+                        <div v-if="index.id != '-1'" class="keywords as-margin-top-space-4">
                             <h5>Nøkkelord:</h5>
                         </div>
-                        <div class="keywords as-margin-top-space-1">
+                        <div v-if="index.id != '-1'" class="keywords as-margin-top-space-1">
                             <div v-for="keyword in index.getKeywords()">
                                 <v-chip class="as-margin-right-space-1" @click:close="removeKeyword(keyword)" closable>
                                     <span class="kw-name">{{ keyword.name }}</span>
@@ -58,10 +69,11 @@
                     </div>
                 </div>
             </div>
-            <div class="as-display-flex">
-                <input type="text" v-model="newIndex.name" placeholder="Enter new index name" />
-                <button @click="addIndex" class="btn-style-keyword add-icon as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-left-space-1" style="" data-form-type=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgb(0, 0, 0);"><path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path></svg></button>
-
+            <div v-show="indexes.length > 0 && indexes[indexes.length-1].id != '-1'" class="as-display-flex">                
+                <v-btn class="as-margin-top-space-4" @click="addIndex" prepend-icon variant="tonal">
+                    <v-icon>mdi-plus</v-icon>
+                    Legg til ny indeks
+                </v-btn>
             </div>
         </div>
     </div>
@@ -81,9 +93,11 @@ export default {
     data() {
         return {
             indexes: [] as Array<ContentIndex>,
-            newIndex: { id: -1, name: '', description: '', link: '', keywords: [] },
+            newIndex: { id: -1, name: '', description: '', link: '', keywords: [], context : '' },
             newKeyword: {id : -1, name: '', weight: 1},
             currentIdNewKeyword: '-1' as String,
+            aktivNyIndex: false,
+            
         };
     },
     mounted() {
@@ -100,28 +114,20 @@ export default {
             console.log(response);
 
             for(var c of response.results) {
-                var contentIndex = new ContentIndex(c.id, c.title, c.description, c.siteUrl, c.keywords);
+                var contentIndex = new ContentIndex(c.id, c.title, c.description, c.siteUrl, c.contextId, c.keywords);
                 this.indexes.push(contentIndex);
             }
 
         },
         addIndex() {
-            if (this.newIndex.name.trim() !== '') {
-                // const newIndex = {
-                //     id: this.indexes.length + 1,
-                //     name: this.newIndex.name.trim(),
-                //     keywords: [],
-                // };
-                
-
-                // this.indexes.push(newIndex);
-                // this.newIndex.name = '';
-            }
+            var newIndex = new ContentIndex(null, '', '', '', 1, []);
+            this.indexes.push(newIndex);
         },
         removeIndex(indexId : String) {
             this.indexes = this.indexes.filter((index) => index.id !== indexId);
         },
         addKeyword(indexId : String, parent : any) {
+            console.log(parent);
             if(this.currentIdNewKeyword == '-1') {
                 this.currentIdNewKeyword = indexId;
                 return;
@@ -163,6 +169,9 @@ export default {
             //     console.log('Save index', index);
             // }
         },
+        createIndex(index : ContentIndex) {
+            index.createContentIndex();
+        }
     },
 };
 </script>
