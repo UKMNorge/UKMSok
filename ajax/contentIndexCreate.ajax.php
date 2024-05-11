@@ -15,7 +15,7 @@ $description = $handleCall->getArgument('description');
 $siteUrl = $handleCall->getArgument('site_url');
 $contextId = $handleCall->getArgument('context_id');
 
-$contentIndex = Write::createContentIndex($title, $description, $siteUrl, $contextId);
+$contentIndex = Write::createContentIndex($title, $siteUrl, $description, $contextId);
 
 $contentIndexObj = [
     'id' => $contentIndex->getId(),

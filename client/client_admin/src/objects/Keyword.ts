@@ -6,13 +6,13 @@ declare var ajaxurl: string; // Kommer fra global
 class Keyword {
     id : String = '-1';
     name : String;
-    weight : Number;
+    weight : number;
     parent : ContentIndex;
     private spaInteraction : typeof SPAInteraction = new SPAInteraction(null, ajaxurl);
 
 
-    constructor(id : String|null, name : String, weight : Number, parent : ContentIndex) {        
-        this.name = name;
+    constructor(id : String|null, name : String, weight : number, parent : ContentIndex) {        
+        this.name = name.toLowerCase();
         this.weight = weight;
         this.parent = parent;
         

@@ -14,7 +14,7 @@ $contentIndexId = $handleCall->getArgument('content_index_id');
 $keywordName = $handleCall->getArgument('keyword_name');
 $weight = $handleCall->getArgument('weight');
 
-$res = Write::createKeyword($contentIndexId, $weight, new Keyword(-1, $keywordName));
+$res = Write::createKeyword($contentIndexId, $weight, new Keyword(-1, $keywordName, $weight));
 
 $handleCall->sendToClient([
     'results' => $res

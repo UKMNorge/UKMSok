@@ -17,7 +17,7 @@
 
 
                             <div>
-                                <v-btn v-if="index.id != null && index.id != '-1'" class="as-margin-right-space-1" @click="saveIndex(index.id)" prepend-icon variant="tonal">
+                                <v-btn v-if="index.id != null && index.id != '-1'" class="as-margin-right-space-1" @click="saveIndex(index)" prepend-icon variant="tonal">
                                     <v-icon>mdi-content-save</v-icon>
                                     Lagre
                                 </v-btn>
@@ -27,7 +27,7 @@
                                     Opprett
                                 </v-btn>
 
-                                <v-btn v-if="index.id != null && index.id != '-1'" @click="removeIndex(index.id)" prepend-icon variant="tonal">
+                                <v-btn v-if="index.id != null && index.id != '-1'" @click="removeIndex(index)" prepend-icon variant="tonal">
                                     <v-icon>mdi-delete</v-icon>
                                     Slett  
                                 </v-btn>
@@ -69,7 +69,7 @@
                     </div>
                 </div>
             </div>
-            <div v-show="indexes.length > 0 && indexes[indexes.length-1].id != '-1'" class="as-display-flex">                
+            <div v-show="(indexes.length < 1) || (indexes.length > 0 && indexes[indexes.length-1].id != '-1')" class="as-display-flex">                
                 <v-btn class="as-margin-top-space-4" @click="addIndex" prepend-icon variant="tonal">
                     <v-icon>mdi-plus</v-icon>
                     Legg til ny indeks
@@ -123,11 +123,13 @@ export default {
             var newIndex = new ContentIndex(null, '', '', '', 1, []);
             this.indexes.push(newIndex);
         },
-        removeIndex(indexId : String) {
-            this.indexes = this.indexes.filter((index) => index.id !== indexId);
+        removeIndex(contentIndex : ContentIndex) {
+            if(contentIndex.id != '-1') {
+                contentIndex.deleteContentIndex();
+            }
+            this.indexes = this.indexes.filter((index) => index.id !== contentIndex.id);
         },
         addKeyword(indexId : String, parent : any) {
-            console.log(parent);
             if(this.currentIdNewKeyword == '-1') {
                 this.currentIdNewKeyword = indexId;
                 return;
@@ -163,11 +165,9 @@ export default {
             var cIndex = keyword.parent;
             cIndex.removeKeyword(keyword.id);
         },
-        saveIndex(indexId : String) {
-            // const index = this.indexes.find((index) => index.id === indexId);
-            // if (index) {
-            //     console.log('Save index', index);
-            // }
+        saveIndex(index : ContentIndex) {
+            index.updatContentIndex();
+
         },
         createIndex(index : ContentIndex) {
             index.createContentIndex();

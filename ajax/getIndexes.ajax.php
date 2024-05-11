@@ -28,7 +28,7 @@ foreach($results as $contentIndex) {
         $retObjs[count($retObjs) - 1]['keywords'][] = [
             'id' => $keyword->getId(),
             'name' => $keyword->getName(),
-            'weight' => '1'
+            'weight' => $keyword->getWeight(),
         ];
     }
 }
