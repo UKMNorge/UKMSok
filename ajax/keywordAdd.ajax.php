@@ -16,6 +16,10 @@ $weight = $handleCall->getArgument('weight');
 
 $res = Write::createKeyword($contentIndexId, $weight, new Keyword(-1, $keywordName, $weight));
 
+$retObj = [
+    'id' => $res->getId(),
+];
+
 $handleCall->sendToClient([
-    'results' => $res
+    'results' => $retObj
 ]);
