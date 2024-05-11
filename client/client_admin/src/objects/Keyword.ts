@@ -12,7 +12,11 @@ class Keyword {
 
 
     constructor(id : String|null, name : String, weight : number, parent : ContentIndex) {        
+        if(name == null || name == '') {
+            throw new Error('Nøkkelord må ha et navn');
+        }
         this.name = name.toLowerCase();
+        weight = weight < 1 ? 1 : (weight > 100 ? 100 : weight); // Sett weight til 1-100
         this.weight = weight;
         this.parent = parent;
         
@@ -64,8 +68,9 @@ class Keyword {
 
         var response = await this.spaInteraction.runAjaxCall('/', 'POST', data);
 
-        if(this.id == null) {
-            this.id = response.id;
+        if(this.id == null || this.id == '-1') {
+            console.log(response);
+            this.id = response.results.id;
         }
 
         return response;

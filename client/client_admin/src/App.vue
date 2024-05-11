@@ -37,8 +37,8 @@
                         <div v-if="index.id != '-1'" class="keywords as-margin-top-space-4">
                             <h5>Nøkkelord:</h5>
                         </div>
-                        <div v-if="index.id != '-1'" class="keywords as-margin-top-space-1">
-                            <div v-for="keyword in index.getKeywords()">
+                        <div v-if="index.id != '-1'" class="keywords">
+                            <div class="keyword as-margin-top-space-1" v-for="keyword in index.getKeywords()">
                                 <v-chip class="as-margin-right-space-1" @click:close="removeKeyword(keyword)" closable>
                                     <span class="kw-name">{{ keyword.name }}</span>
                                     <span class="kw-weight">{{ keyword.weight }}</span>
@@ -47,7 +47,7 @@
                             </div>
                             
                             
-                            <div v-if="currentIdNewKeyword == index.id">
+                            <div class="keyword as-margin-top-space-1" v-if="currentIdNewKeyword == index.id">
                                 <v-chip @click:close="closeKeywordInput()" closable>
                                     <input type="text" v-model="newKeyword.name" placeholder="Keyword" />
                                     <input min="1" max="100" type="number" v-model="newKeyword.weight" placeholder="Weight" />
@@ -59,7 +59,7 @@
                                 <!-- <input type="text" v-model="newKeyword.name" placeholder="Enter new keyword" />
                                 <input type="number" v-model="newKeyword.weight" placeholder="Enter weight" />  -->
                             </div>
-                            <div class="as-display-flex" v-else>
+                            <div class="as-display-flex keyword button-kw as-margin-top-space-1" v-else>
                                 <v-btn class="as-margin-auto" @click="addKeyword(index.id, index)" density="compact" icon variant="tonal">
                                     <v-icon>mdi-plus</v-icon>
                                 </v-btn>
@@ -94,7 +94,7 @@ export default {
         return {
             indexes: [] as Array<ContentIndex>,
             newIndex: { id: -1, name: '', description: '', link: '', keywords: [], context : '' },
-            newKeyword: {id : -1, name: '', weight: 1},
+            newKeyword: {id : -1, name: '', weight: 100},
             currentIdNewKeyword: '-1' as String,
             aktivNyIndex: false,
             
@@ -132,6 +132,13 @@ export default {
         addKeyword(indexId : String, parent : any) {
             if(this.currentIdNewKeyword == '-1') {
                 this.currentIdNewKeyword = indexId;
+                return;
+            }
+            
+            if(this.currentIdNewKeyword != indexId) {
+                this.currentIdNewKeyword = indexId;
+                this.newKeyword.name = '';
+                this.newKeyword.weight = 100;
                 return;
             }
 
@@ -212,7 +219,16 @@ button {
     border-bottom: solid 1px var(--color-primary-grey-light);
 }
 .keywords {
-    display: flex;
+    display: table;
+}
+.keywords .keyword {
+    position: relative;
+    float: left;
+}
+.keywords .keyword.button-kw button {
+    display: flex !important;
+    height: 32px !important;
+    width: 32px !important;
 }
 .weight-value {
     margin-right: 10px;
