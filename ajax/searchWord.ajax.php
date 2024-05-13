@@ -6,15 +6,16 @@ use UKMNorge\SearchArrangorsystemet\SearchContentIndex;
 
 require_once('UKM/Autoloader.php');
 
-$handleCall = new HandleAPICall(['searchInput'], [], ['GET', 'POST'], false);
+$handleCall = new HandleAPICall(['searchInput', 'context'], [], ['GET', 'POST'], false);
 
 
 $searchInput = $handleCall->getArgument('searchInput');
+$searchContext = (int) $handleCall->getArgument('context');
 
 
 $retObjs = [];
 
-$results = SearchContentIndex::search($searchInput);
+$results = SearchContentIndex::search($searchInput, $searchContext);
 
 
 foreach($results as $result) {
