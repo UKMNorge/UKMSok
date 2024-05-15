@@ -11,6 +11,8 @@
                 </button>
             </div>
         </div>
+
+        <!-- Søk arrangørsystemet -->
         <div v-show="results.length > 0" class="results-div">
             <div class="result-item as-btn-hover-default" v-for="result in results">
                 <a class="click-result" :href="result.siteUrl">
@@ -19,6 +21,19 @@
                 </a>
             </div>
         </div>
+
+        <!-- Søk Blogs -->
+        <div v-show="blogs.length > 0" class="results-div">
+            <div class="result-item as-btn-hover-default" v-for="blog in blogs">
+                <a class="click-result" :href="blog.siteUrl+'/wp-admin/'">
+                    <p class="title">{{ blog.title }}</p>
+                    <span class="description">{{ blog.site_type.charAt(0).toUpperCase() + blog.site_type.slice(1)}}</span>
+                </a>
+            </div>
+        </div>
+
+        
+
         <div v-show="results.length > 0" class="search-results-overlay" @click="resetSearch()">
 
         </div>
@@ -39,6 +54,7 @@ const spaInteraction = new SPAInteraction(null, ajaxurl);
 export default class SearchArrSys extends Vue {
     searchInput: string = '';
     results: any[] = [];
+    blogs: any[] = [];
     active: boolean = false;
     mainBlog : boolean = isMainSite == 'true';
     searchContext: string = this.mainBlog ? 'arrangørsystemet' : blogName;
@@ -52,13 +68,14 @@ export default class SearchArrSys extends Vue {
 
         var data : any = {
             action: 'UKMsok_ajax',
-            controller: 'searchWord',
+            controller: 'search',
             context : this.mainBlog ? 1 : 2, // 1: user, 2: arrangement
             searchInput: this.searchInput,
         };
         var response = await spaInteraction.runAjaxCall('/', 'POST', data);
 
         this.results = response.results;
+        this.blogs = response.blogs;
 
         return response;
     };
