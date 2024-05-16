@@ -1,7 +1,7 @@
 <template>
     <div :class="active || searchInput.length > 0 ? 'active' : ''" class="as-container main-div as-margin-top-space-3 as-display-flex">
         <div class="as-display-flex search-div">
-            <input :class="results.length > 0 ? 'results' : ''" class="search-input-arr-sys" @click="searchInputChanged()" @focus="() => active=true" @blur="() => active=false" v-model="searchInput" @input="searchInputChanged()" :placeholder="'Søk ' + searchContext">
+            <input :class="hasResults() ? 'results' : ''" class="search-input-arr-sys" @click="searchInputChanged()" @focus="() => active=true" @blur="() => active=false" v-model="searchInput" @input="searchInputChanged()" :placeholder="'Søk ' + searchContext">
             <div class="button-icon">
                 <button v-show="searchInput.length < 1" class="as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-space-2" @click="searchInputChanged()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path></svg>
@@ -13,28 +13,42 @@
         </div>
 
         <!-- Søk arrangørsystemet -->
-        <div v-show="results.length > 0" class="results-div">
-            <div class="result-item as-btn-hover-default" v-for="result in results">
-                <a class="click-result" :href="result.siteUrl">
-                    <p class="title">{{ result.title }}</p>
-                    <span class="description">{{ result.description }}</span>
-                </a>
+        <div class="all-results">
+            <div v-if="results.length > 0" class="results-div">
+                <!-- <p class="section-title">{{ searchContext }}</p> -->
+                <div class="result-item as-btn-hover-default" v-for="result in results">
+                    <a class="click-result" :href="result.siteUrl">
+                        <p class="title">{{ result.title }}</p>
+                        <span class="description">{{ result.description }}</span>
+                    </a>
+                </div>
             </div>
-        </div>
 
-        <!-- Søk Blogs -->
-        <div v-show="blogs.length > 0" class="results-div">
-            <div class="result-item as-btn-hover-default" v-for="blog in blogs">
-                <a class="click-result" :href="blog.siteUrl+'/wp-admin/'">
-                    <p class="title">{{ blog.title }}</p>
-                    <span class="description">{{ blog.site_type.charAt(0).toUpperCase() + blog.site_type.slice(1)}}</span>
-                </a>
+            <!-- Søk områder -->
+            <div v-if="omrader.length > 0" class="results-div">
+                <!-- <p class="section-title">Områder</p> -->
+                <div class="result-item as-btn-hover-default" v-for="omrade in omrader">
+                    <a class="click-result" @click="clickBlog(omrade)">
+                        <p class="title">{{ omrade.navn }}</p>
+                        <span class="description">{{ omrade.type.charAt(0).toUpperCase() + omrade.type.slice(1)}}</span>
+                    </a>
+                </div>
             </div>
+
+            <!-- Søk Blogs -->
+            <!-- <div v-if="blogs.length > 0" class="results-div">
+                <div class="result-item as-btn-hover-default" v-for="blog in blogs">
+                    <a class="click-result" @click="clickBlog(blog)">
+                        <p class="title">{{ blog.title }}</p>
+                        <span class="description">{{ blog.site_type.charAt(0).toUpperCase() + blog.site_type.slice(1)}}</span>
+                    </a>
+                </div>
+            </div> -->
         </div>
 
         
 
-        <div v-show="results.length > 0" class="search-results-overlay" @click="resetSearch()">
+        <div v-show="hasResults()" class="search-results-overlay" @click="resetSearch()">
 
         </div>
     </div>
@@ -54,11 +68,24 @@ const spaInteraction = new SPAInteraction(null, ajaxurl);
 export default class SearchArrSys extends Vue {
     searchInput: string = '';
     results: any[] = [];
-    blogs: any[] = [];
+    omrader : any[] = [];
+    // blogs: any[] = [];
     active: boolean = false;
     mainBlog : boolean = isMainSite == 'true';
     searchContext: string = this.mainBlog ? 'arrangørsystemet' : blogName;
-    
+
+    public clickBlog(blog: any) {
+        if(blog.site_type == 'kommune' && blog.kommune) {
+            window.location.href = `https://ukm.dev/wp-admin/user/index.php?page=UKMnettverket_kommune&omrade=${blog.kommune}&type=kommune`;
+        }
+        else if(blog.site_type == 'arrangement') {
+            window.location.href = blog.siteUrl+'/wp-admin/';
+        }
+        else {
+            window.location.href = blog.siteUrl;
+        }
+    }
+
     
     public async searchInputChanged() {
         if( this.searchInput.length < 3 ) {
@@ -75,7 +102,11 @@ export default class SearchArrSys extends Vue {
         var response = await spaInteraction.runAjaxCall('/', 'POST', data);
 
         this.results = response.results;
-        this.blogs = response.blogs;
+        // this.blogs = response.blogs;
+        this.omrader = response.omrader;
+
+        console.log(response);
+        console.log(this.omrader);
 
         return response;
     };
@@ -86,7 +117,12 @@ export default class SearchArrSys extends Vue {
     public resetAll() {
         this.searchInput = '';
         this.results = [];
+        this.omrader = [];
     };
+
+    public hasResults() {
+        return this.results.length > 0 || this.omrader.length > 0;
+    }
 }
 </script>
 
@@ -142,7 +178,7 @@ export default class SearchArrSys extends Vue {
     margin: auto !important;
     z-index: 9999999;
 }
-.results-div {
+.all-results {
     position: absolute !important;
     width: calc(100% - 20px) !important;
     top: 34px !important;
@@ -164,7 +200,7 @@ export default class SearchArrSys extends Vue {
     padding: 0 !important;
 }
 .click-result .title {
-    font-weight: bold !important;
+    font-weight: 400 !important;
     margin: 0 !important;
     color: var(--color-primary-grey-dark) !important;
     line-height: 1 !important;
@@ -199,4 +235,14 @@ export default class SearchArrSys extends Vue {
     border-radius: 50% !important;
     background: var(--color-primary-grey-light) !important;
 }
+/* .section-title {
+    font-weight: bold !important;
+    padding: 10px 12px !important;
+    border-top: solid 2px var(--color-primary-grey-light) !important;
+    color: var(--color-primary-grey-dark) !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+    margin-top: var(--initial-space-box) !important;
+    margin-bottom: calc(var(--initial-space-box)*2) !important;
+} */
 </style>
