@@ -28,7 +28,7 @@
             <div v-if="omrader.length > 0" class="results-div">
                 <!-- <p class="section-title">Områder</p> -->
                 <div class="result-item as-btn-hover-default" v-for="omrade in omrader">
-                    <a class="click-result" @click="clickBlog(omrade)">
+                    <a class="click-result" @click="clickOmrade(omrade)">
                         <p class="title">{{ omrade.navn }}</p>
                         <span class="description">{{ omrade.type.charAt(0).toUpperCase() + omrade.type.slice(1)}}</span>
                     </a>
@@ -36,14 +36,14 @@
             </div>
 
             <!-- Søk Blogs -->
-            <!-- <div v-if="blogs.length > 0" class="results-div">
+            <div v-if="blogs.length > 0" class="results-div">
                 <div class="result-item as-btn-hover-default" v-for="blog in blogs">
                     <a class="click-result" @click="clickBlog(blog)">
                         <p class="title">{{ blog.title }}</p>
                         <span class="description">{{ blog.site_type.charAt(0).toUpperCase() + blog.site_type.slice(1)}}</span>
                     </a>
                 </div>
-            </div> -->
+            </div>
         </div>
 
         
@@ -69,16 +69,13 @@ export default class SearchArrSys extends Vue {
     searchInput: string = '';
     results: any[] = [];
     omrader : any[] = [];
-    // blogs: any[] = [];
+    blogs: any[] = [];
     active: boolean = false;
     mainBlog : boolean = isMainSite == 'true';
     searchContext: string = this.mainBlog ? 'arrangørsystemet' : blogName;
 
     public clickBlog(blog: any) {
-        if(blog.site_type == 'kommune' && blog.kommune) {
-            window.location.href = `https://ukm.dev/wp-admin/user/index.php?page=UKMnettverket_kommune&omrade=${blog.kommune}&type=kommune`;
-        }
-        else if(blog.site_type == 'arrangement') {
+        if(blog.site_type == 'arrangement') {
             window.location.href = blog.siteUrl+'/wp-admin/';
         }
         else {
@@ -86,10 +83,22 @@ export default class SearchArrSys extends Vue {
         }
     }
 
+    public clickOmrade(omrade: any) {
+        if(omrade.type == 'kommune' || omrade.type == 'fylke') {
+            window.location.href = `https://ukm.dev/wp-admin/user/index.php?page=UKMnettverket_${omrade.type}&omrade=${omrade.id}&type=${omrade.type}`;
+        }
+        else if(omrade.type == 'arrangement') {
+            window.location.href = omrade.siteUrl+'/wp-admin/';
+        }
+        else {
+            window.location.href = omrade.siteUrl;
+        }
+    }
+
     
     public async searchInputChanged() {
         if( this.searchInput.length < 3 ) {
-            this.results = [];
+            this.resetSearch();
             return;
         }
 
@@ -102,7 +111,7 @@ export default class SearchArrSys extends Vue {
         var response = await spaInteraction.runAjaxCall('/', 'POST', data);
 
         this.results = response.results;
-        // this.blogs = response.blogs;
+        this.blogs = response.blogs;
         this.omrader = response.omrader;
 
         console.log(response);
@@ -112,16 +121,19 @@ export default class SearchArrSys extends Vue {
     };
     public resetSearch() {
         this.results = [];
+        this.omrader = [];
+        this.blogs = [];
     };
     
     public resetAll() {
         this.searchInput = '';
         this.results = [];
         this.omrader = [];
+        this.blogs = [];
     };
 
     public hasResults() {
-        return this.results.length > 0 || this.omrader.length > 0;
+        return this.results.length > 0 || this.omrader.length > 0 || this.blogs.length > 0;
     }
 }
 </script>
