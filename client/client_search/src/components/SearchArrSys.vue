@@ -19,8 +19,11 @@
                 <template v-for="result in results">
                     <div class="result-item as-btn-hover-default" @click="clickOnly(result.siteUrl)">
                         <div class="click-result">
-                            <p class="title">{{ result.title }}</p>
-                            <span class="description">{{ result.description }}</span>
+                            <p class="result-title">{{ result.title }}</p>
+                            <div class="all-descriptions">
+                                <span class="description">Arrangørsystemet</span>
+                                <span class="description">{{ result.description }}</span>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -32,8 +35,10 @@
                 <template v-for="omrade in omrader">
                     <div class="result-item as-btn-hover-default" @click="clickOmrade(omrade)">
                         <div class="click-result">
-                            <p class="title">{{ omrade.navn }}</p>
-                            <span class="description">{{ omrade.type.charAt(0).toUpperCase() + omrade.type.slice(1)}}</span>
+                            <p class="result-title">{{ omrade.navn }}</p>
+                            <div class="all-descriptions">
+                                <span class="description">{{ omrade.type.charAt(0).toUpperCase() + omrade.type.slice(1)}}</span>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -44,8 +49,11 @@
                 <template v-for="blog in blogs">
                     <div class="result-item as-btn-hover-default"  @click="clickBlog(blog)">
                         <div class="click-result">
-                            <p class="title">{{ blog.title }}</p>
-                            <span class="description">{{ blog.site_type.charAt(0).toUpperCase() + blog.site_type.slice(1)}}</span>
+                            <p class="result-title">{{ blog.title }}</p>
+                            <div class="all-descriptions">
+                                <span class="description">{{ blog.site_type.charAt(0).toUpperCase() + blog.site_type.slice(1)}}</span>
+                                <span v-if="blog.season" class="description">{{ blog.season }}</span>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -214,29 +222,38 @@ export default class SearchArrSys extends Vue {
     overflow: hidden !important;
 }
 .result-item {
-    padding: 10px 12px !important;
+    padding: calc(var(--initial-space-box)*2) !important;
     border-top: 1px solid #e0e0e0;
 }
 .click-result {
     display: contents !important;
     padding: 0 !important;
 }
-.click-result .title {
+.result-title {
     font-weight: 400 !important;
     margin: 0 !important;
-    color: var(--color-primary-grey-dark) !important;
     line-height: 1 !important;
+    font-size: 15px !important;
+}
+.all-descriptions {
+    display: table !important;
 }
 .click-result .description {
+    float: left !important;
+    border-radius: 10px !important;
+    padding: calc(var(--initial-space-box)/2) var(--initial-space-box) !important;
+    border: solid 1px var(--color-primary-grey-medium) !important;
     margin: 0 !important;
-    color: var(--color-primary-grey) !important;
+    margin-top: var(--initial-space-box) !important;
+    margin-right: calc(var(--initial-space-box) / 2) !important;
+    color: var(--color-primary-grey-light) !important;
     font-size: 12px !important;
     display: block !important;
     color: var(--color-primary-grey) !important;
     font-weight: 100 !important;
     line-height: 1 !important;
     padding-top: calc(var(--initial-space-box) / 2) !important;
-    font-size: 11px !important
+    font-size: 12px !important
 }
 
 .search-results-overlay {
