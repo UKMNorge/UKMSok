@@ -16,33 +16,39 @@
         <div class="all-results">
             <div v-if="results.length > 0" class="results-div">
                 <!-- <p class="section-title">{{ searchContext }}</p> -->
-                <div class="result-item as-btn-hover-default" v-for="result in results">
-                    <a class="click-result" :href="result.siteUrl">
-                        <p class="title">{{ result.title }}</p>
-                        <span class="description">{{ result.description }}</span>
-                    </a>
-                </div>
+                <template v-for="result in results">
+                    <div class="result-item as-btn-hover-default" @click="clickOnly(result.siteUrl)">
+                        <div class="click-result">
+                            <p class="title">{{ result.title }}</p>
+                            <span class="description">{{ result.description }}</span>
+                        </div>
+                    </div>
+                </template>
             </div>
 
             <!-- Søk områder -->
             <div v-if="omrader.length > 0" class="results-div">
                 <!-- <p class="section-title">Områder</p> -->
-                <div class="result-item as-btn-hover-default" v-for="omrade in omrader">
-                    <a class="click-result" @click="clickOmrade(omrade)">
-                        <p class="title">{{ omrade.navn }}</p>
-                        <span class="description">{{ omrade.type.charAt(0).toUpperCase() + omrade.type.slice(1)}}</span>
-                    </a>
-                </div>
+                <template v-for="omrade in omrader">
+                    <div class="result-item as-btn-hover-default" @click="clickOmrade(omrade)">
+                        <div class="click-result">
+                            <p class="title">{{ omrade.navn }}</p>
+                            <span class="description">{{ omrade.type.charAt(0).toUpperCase() + omrade.type.slice(1)}}</span>
+                        </div>
+                    </div>
+                </template>
             </div>
 
             <!-- Søk Blogs -->
             <div v-if="blogs.length > 0" class="results-div">
-                <div class="result-item as-btn-hover-default" v-for="blog in blogs">
-                    <a class="click-result" @click="clickBlog(blog)">
-                        <p class="title">{{ blog.title }}</p>
-                        <span class="description">{{ blog.site_type.charAt(0).toUpperCase() + blog.site_type.slice(1)}}</span>
-                    </a>
-                </div>
+                <template v-for="blog in blogs">
+                    <div class="result-item as-btn-hover-default"  @click="clickBlog(blog)">
+                        <div class="click-result">
+                            <p class="title">{{ blog.title }}</p>
+                            <span class="description">{{ blog.site_type.charAt(0).toUpperCase() + blog.site_type.slice(1)}}</span>
+                        </div>
+                    </div>
+                </template>
             </div>
         </div>
 
@@ -81,6 +87,10 @@ export default class SearchArrSys extends Vue {
         else {
             window.location.href = blog.siteUrl;
         }
+    }
+
+    public clickOnly(url: string) {
+        window.location.href = url;
     }
 
     public clickOmrade(omrade: any) {
