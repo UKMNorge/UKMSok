@@ -3,6 +3,9 @@
 use UKMNorge\OAuth2\HandleAPICall;
 use UKMNorge\SearchArrangorsystemet\SearchContentIndex;
 use UKMNorge\SearchArrangorsystemet\Search;
+use UKMNorge\Arrangement\Arrangement;
+
+
 global $current_user;
 
 require_once('UKM/Autoloader.php');
@@ -33,6 +36,12 @@ $retOmrader = [];
 if($searchContext == 1) {
     $retBlogs = Search::sokBlogs($searchInput);
     $retOmrader = Search::searchOmraader($searchInput);
+}
+// Hvis kontekst er 2 (arrangement) kan man søke deltakere og innslag i arrangementet
+elseif($searchContext == 2) {
+    $arrangement = new Arrangement(get_option('pl_id'));
+    $retOmrader = array_merge($retOmrader, Search::sokDeltakere($arrangement, $searchInput));
+    $retOmrader = array_merge($retOmrader, Search::sokInnslag($arrangement, $searchInput));
 }
 
 

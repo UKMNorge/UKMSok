@@ -1,7 +1,7 @@
 <template>
     <div :class="active || searchInput.length > 0 ? 'active' : ''" class="as-container main-div as-margin-top-space-3 as-display-flex">
         <div class="as-display-flex search-div">
-            <input :class="hasResults() ? 'results' : ''" class="search-input-arr-sys" @click="searchInputChanged()" @focus="() => active=true" @blur="() => active=false" v-model="searchInput" @input="searchInputChanged()" :placeholder="'Søk ' + searchContext">
+            <input :class="hasResults() ? 'results' : ''" class="search-input-arr-sys" @click="searchInputChanged()" @focus="() => active=true" @blur="() => active=false" v-model="searchInput" @input="searchInputChanged()" :placeholder="searchContext">
             <div class="button-icon">
                 <button v-show="searchInput.length < 1" class="as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-space-2" @click="searchInputChanged()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path></svg>
@@ -36,6 +36,7 @@
                             <p class="result-title">{{ omrade.navn }}</p>
                             <div class="all-descriptions">
                                 <span class="description">{{ omrade.type.charAt(0).toUpperCase() + omrade.type.slice(1)}}</span>
+                                <span v-if="omrade.beskrivelse && omrade.beskrivelse.length > 0" class="description">{{ omrade.beskrivelse}}</span>
                             </div>
                         </div>
                     </div>
@@ -84,7 +85,7 @@ export default class SearchArrSys extends Vue {
     blogs: any[] = [];
     active: boolean = false;
     mainBlog : boolean = isMainSite == 'true';
-    searchContext: string = this.mainBlog ? 'arrangørsystemet' : blogName;
+    searchContext: string = 'Søk , ' + (this.mainBlog ? 'fylker, kommuner, arrangementer... på arrangørsystemet' : 'innslag eller personer på ' + blogName);
 
     public clickBlog(blog: any) {
         if(blog.site_type == 'arrangement') {
