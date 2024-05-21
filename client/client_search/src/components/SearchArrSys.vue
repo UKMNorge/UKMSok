@@ -15,7 +15,6 @@
         <!-- Søk arrangørsystemet -->
         <div class="all-results">
             <div v-if="results.length > 0" class="results-div">
-                <!-- <p class="section-title">{{ searchContext }}</p> -->
                 <template v-for="result in results">
                     <div class="result-item as-btn-hover-default" @click="clickOnly(result.siteUrl)">
                         <div class="click-result">
@@ -31,7 +30,6 @@
 
             <!-- Søk områder -->
             <div v-if="omrader.length > 0" class="results-div">
-                <!-- <p class="section-title">Områder</p> -->
                 <template v-for="omrade in omrader">
                     <div class="result-item as-btn-hover-default" @click="clickOmrade(omrade)">
                         <div class="click-result">
@@ -219,7 +217,8 @@ export default class SearchArrSys extends Vue {
     border-top-left-radius: 0 !important;
     background: #f4f4f4;
     z-index: 9999999;
-    overflow: hidden !important;
+    max-height: 70vh;
+    overflow-y: scroll !important;
 }
 .result-item {
     padding: calc(var(--initial-space-box)*2) !important;
@@ -274,14 +273,4 @@ export default class SearchArrSys extends Vue {
     border-radius: 50% !important;
     background: var(--color-primary-grey-light) !important;
 }
-/* .section-title {
-    font-weight: bold !important;
-    padding: 10px 12px !important;
-    border-top: solid 2px var(--color-primary-grey-light) !important;
-    color: var(--color-primary-grey-dark) !important;
-    font-size: 12px !important;
-    line-height: 1 !important;
-    margin-top: var(--initial-space-box) !important;
-    margin-bottom: calc(var(--initial-space-box)*2) !important;
-} */
 </style>
