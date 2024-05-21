@@ -85,7 +85,7 @@ export default class SearchArrSys extends Vue {
     blogs: any[] = [];
     active: boolean = false;
     mainBlog : boolean = isMainSite == 'true';
-    searchContext: string = 'Søk , ' + (this.mainBlog ? 'fylker, kommuner, arrangementer... på arrangørsystemet' : 'innslag eller personer på ' + blogName);
+    searchContext: string = 'Søk ' + (this.mainBlog ? 'fylker, kommuner, arrangementer... på arrangørsystemet' : 'innslag eller personer på ' + blogName);
 
     public clickBlog(blog: any) {
         if(blog.site_type == 'arrangement') {
