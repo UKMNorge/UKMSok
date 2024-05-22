@@ -115,7 +115,13 @@ export default class SearchArrSys extends Vue {
 
     public clickOmrade(omrade: any) {
         if(omrade.type == 'kommune' || omrade.type == 'fylke') {
-            window.location.href = `https://ukm.dev/wp-admin/user/index.php?page=UKMnettverket_${omrade.type}&omrade=${omrade.id}&type=${omrade.type}`;
+            var id = omrade.id;
+            if (omrade.id.includes('_')) {
+                var idParts = omrade.id.split('_');
+                id = idParts[1];
+            }
+            
+            window.location.href = `https://ukm.dev/wp-admin/user/index.php?page=UKMnettverket_${omrade.type}&omrade=${id}&type=${omrade.type}`;
         }
         else if(omrade.type == 'arrangement') {
             window.location.href = omrade.siteUrl+'/wp-admin/';
