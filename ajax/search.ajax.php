@@ -44,10 +44,13 @@ elseif($searchContext == 2) {
     $retOmrader = array_merge($retOmrader, Search::sokInnslag($arrangement, $searchInput));
 }
 
+// Logger søk
+$logId = Search::searchLog($searchInput, $searchContext);
 
 $handleCall->sendToClient([
     'results' => $retObjs,
     'blogs' => $retBlogs,
     'omrader' => $retOmrader,
     'searchInput' => $searchInput,
+    'logId' => $logId,
 ]);

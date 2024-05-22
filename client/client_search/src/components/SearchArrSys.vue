@@ -21,7 +21,7 @@
         <div class="all-results">
             <div v-if="results.length > 0" class="results-div">
                 <template v-for="result in results">
-                    <div class="result-item as-btn-hover-default" @click="clickOnly(result.siteUrl)">
+                    <div class="result-item as-btn-hover-default" @click="clickOnly(result)">
                         <div class="click-result">
                             <p class="result-title">{{ result.title }}</p>
                             <div class="all-descriptions">
@@ -93,6 +93,7 @@ export default class SearchArrSys extends Vue {
     mainBlog : boolean = isMainSite == 'true';
     searchContext: string = 'Søk funksjoner, ' + (this.mainBlog ? 'fylker, kommuner, arrangementer... på arrangørsystemet' : 'innslag eller personer på ' + blogName);
     loading : boolean = false;
+    searchLogId : number = -1;
 
     // Debounce the search input change handler
     debouncedSearchInputChanged = debounce(this.searchInputChanged, 300);
@@ -104,10 +105,12 @@ export default class SearchArrSys extends Vue {
         else {
             window.location.href = blog.siteUrl;
         }
+        this.logClick(null, blog.siteUrl);
     }
 
-    public clickOnly(url: string) {
-        window.location.href = url;
+    public clickOnly(result: string) {
+        this.logClick((<any>result).id);
+        window.location.href = (<any>result).url;
     }
 
     public clickOmrade(omrade: any) {
@@ -120,6 +123,24 @@ export default class SearchArrSys extends Vue {
         else {
             window.location.href = omrade.siteUrl;
         }
+
+        this.logClick(null, omrade.siteUrl);
+    }
+
+    private logClick(resultId : String|null, text? : String) {
+        var data : any = {
+            action: 'UKMsok_ajax',
+            controller: 'clickedResult',
+            logId: this.searchLogId,
+        };
+        if(resultId) {
+            data.resultId = resultId;
+        }
+        if(text) {
+            data.text = text;
+        }
+        
+        var response = spaInteraction.runAjaxCall('/', 'POST', data);
     }
 
     
@@ -145,6 +166,7 @@ export default class SearchArrSys extends Vue {
             return;
         }
         
+        this.searchLogId = response.logId;
         this.loading = false;
 
         this.results = response.results;
@@ -239,7 +261,7 @@ export default class SearchArrSys extends Vue {
     background: #f4f4f4;
     z-index: 9999999;
     max-height: 70vh;
-    overflow-y: scroll !important;
+    overflow-y: auto !important;
 }
 .result-item {
     padding: calc(var(--initial-space-box)*2) !important;
