@@ -110,7 +110,7 @@ export default class SearchArrSys extends Vue {
 
     public clickOnly(result: string) {
         this.logClick((<any>result).id);
-        window.location.href = (<any>result).url;
+        window.location.href = (<any>result).siteUrl;
     }
 
     public clickOmrade(omrade: any) {
