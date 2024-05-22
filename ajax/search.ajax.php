@@ -49,4 +49,5 @@ $handleCall->sendToClient([
     'results' => $retObjs,
     'blogs' => $retBlogs,
     'omrader' => $retOmrader,
+    'searchInput' => $searchInput,
 ]);

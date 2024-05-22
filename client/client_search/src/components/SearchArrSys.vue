@@ -6,8 +6,13 @@
                 <button v-show="searchInput.length < 1" class="as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-space-2" @click="searchInputChanged()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path></svg>
                 </button>
-                <button v-show="searchInput.length > 0" class="reset-all as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-space-2" @click="resetAll()">
+                <button v-show="!loading && searchInput.length > 0" class="reset-all as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-space-2" @click="resetAll()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path></svg>
+                </button>
+                <button v-show="loading" class="loading-btn as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-space-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1); animation: 1.5s ease-in-out 0s infinite normal none running rotation">
+                        <circle cx="12" cy="20" r="2"></circle><circle cx="12" cy="4" r="2"></circle><circle cx="6.343" cy="17.657" r="2"></circle><circle cx="17.657" cy="6.343" r="2"></circle><circle cx="4" cy="12" r="2.001"></circle><circle cx="20" cy="12" r="2"></circle><circle cx="6.343" cy="6.344" r="2"></circle><circle cx="17.657" cy="17.658" r="2"></circle>
+                    </svg>
                 </button>
             </div>
         </div>
@@ -85,7 +90,8 @@ export default class SearchArrSys extends Vue {
     blogs: any[] = [];
     active: boolean = false;
     mainBlog : boolean = isMainSite == 'true';
-    searchContext: string = 'Søk ' + (this.mainBlog ? 'fylker, kommuner, arrangementer... på arrangørsystemet' : 'innslag eller personer på ' + blogName);
+    searchContext: string = 'Søk funksjoner, ' + (this.mainBlog ? 'fylker, kommuner, arrangementer... på arrangørsystemet' : 'innslag eller personer på ' + blogName);
+    loading : boolean = false;
 
     public clickBlog(blog: any) {
         if(blog.site_type == 'arrangement') {
@@ -114,10 +120,13 @@ export default class SearchArrSys extends Vue {
 
     
     public async searchInputChanged() {
+        this.resetSearch();
         if( this.searchInput.length < 3 ) {
-            this.resetSearch();
+            this.loading = false;
             return;
         }
+
+        this.loading = true;
 
         var data : any = {
             action: 'UKMsok_ajax',
@@ -126,6 +135,12 @@ export default class SearchArrSys extends Vue {
             searchInput: this.searchInput,
         };
         var response = await spaInteraction.runAjaxCall('/', 'POST', data);
+        
+        this.loading = false;
+        // The search input has changed while waiting for the response
+        if(response.searchInput != this.searchInput) {
+            return;
+        }
 
         this.results = response.results;
         this.blogs = response.blogs;
