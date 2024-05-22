@@ -78,6 +78,8 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 import { SPAInteraction } from 'ukm-spa/SPAInteraction';
 import debounce from 'lodash/debounce';
 
+const ukmHostname = (<any>window).UKM_HOSTNAME;
+
 var ajaxurl : string = (<any>window).ajaxurl; // Kommer fra global
 var isMainSite : string = (<any>window).isMainSite; // Kommer fra global
 var blogName : string = (<any>window).blogName; // Kommer fra global
@@ -121,7 +123,7 @@ export default class SearchArrSys extends Vue {
                 id = idParts[1];
             }
             
-            window.location.href = `https://ukm.dev/wp-admin/user/index.php?page=UKMnettverket_${omrade.type}&omrade=${id}&type=${omrade.type}`;
+            window.location.href = `https://${ukmHostname}/wp-admin/user/index.php?page=UKMnettverket_${omrade.type}&omrade=${id}&type=${omrade.type}`;
         }
         else if(omrade.type == 'arrangement') {
             window.location.href = omrade.siteUrl+'/wp-admin/';
