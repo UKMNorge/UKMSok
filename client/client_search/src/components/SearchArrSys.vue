@@ -136,11 +136,12 @@ export default class SearchArrSys extends Vue {
         };
         var response = await spaInteraction.runAjaxCall('/', 'POST', data);
         
-        this.loading = false;
         // The search input has changed while waiting for the response
         if(response.searchInput != this.searchInput) {
             return;
         }
+        
+        this.loading = false;
 
         this.results = response.results;
         this.blogs = response.blogs;
