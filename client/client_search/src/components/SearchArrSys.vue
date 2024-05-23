@@ -233,6 +233,9 @@ export default class SearchArrSys extends Vue {
     height: 35px !important;
     z-index: 999999 !important;
 }
+#wp-admin-bar-search-arrangorsystemet .ab-item {
+    padding: 0 var(--initial-space-box) !important;
+}
 </style>
 
 <style scoped>
@@ -294,6 +297,7 @@ export default class SearchArrSys extends Vue {
     width: calc(100% - 16px) !important;
     top: 34px !important;
     margin: 8px !important;
+    margin-top: 0 !important;
     left: 0 !important;
     right: 0 !important;
 }
@@ -354,6 +358,9 @@ export default class SearchArrSys extends Vue {
     display: none !important;
 }
 @media screen and (max-width: 782px) {
+    .all-results { 
+        margin-top: 8px !important;
+    }
     .button-icon {
         right: 15px;
         top: 0;   
