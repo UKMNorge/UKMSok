@@ -1,14 +1,20 @@
 <template>
-    <div :class="active || searchInput.length > 0 ? 'active' : ''" class="as-container main-div as-margin-top-space-3 as-display-flex">
+    <div :class="active || searchInput.length > 0 ? 'active' : ''" class="as-container main-div as-margin-top-space-3 as-display-flex" ref="searchMainDiv">
         <div class="as-display-flex search-div">
             <input :class="hasResults() ? 'results' : ''" class="search-input-arr-sys" @click="searchInputChanged()" @focus="() => active=true" @blur="() => active=false" v-model="searchInput" @input="debouncedSearchInputChanged" :placeholder="searchContext">
             <div class="button-icon">
-                <button v-show="searchInput.length < 1" class="as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-space-2" @click="searchInputChanged()">
+                <button class="as-btn-simple search-xs-btn as-btn-hover-default as-padding-space-2 as-margin-space-2" @click="openSearchXS()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path></svg>
                 </button>
-                <button v-show="!loading && searchInput.length > 0" class="reset-all as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-space-2" @click="resetAll()">
+
+                <button v-show="searchInput.length < 1" class="as-btn-simple search-btn as-btn-hover-default as-padding-space-2 as-margin-space-2" @click="searchInputChanged()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path></svg>
+                </button>
+
+                <button v-show="(isXS() && active && !loading) || (!loading && searchInput.length > 0)" class="reset-all as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-space-2" @click="resetAll()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1);"><path d="m16.192 6.344-4.243 4.242-4.242-4.242-1.414 1.414L10.535 12l-4.242 4.242 1.414 1.414 4.242-4.242 4.243 4.242 1.414-1.414L13.364 12l4.242-4.242z"></path></svg>
                 </button>
+
                 <button v-show="loading" class="loading-btn as-btn-simple as-btn-hover-default as-padding-space-2 as-margin-space-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: rgba(0, 0, 0, 1); animation: 1.5s ease-in-out 0s infinite normal none running rotation">
                         <circle cx="12" cy="20" r="2"></circle><circle cx="12" cy="4" r="2"></circle><circle cx="6.343" cy="17.657" r="2"></circle><circle cx="17.657" cy="6.343" r="2"></circle><circle cx="4" cy="12" r="2.001"></circle><circle cx="20" cy="12" r="2"></circle><circle cx="6.343" cy="6.344" r="2"></circle><circle cx="17.657" cy="17.658" r="2"></circle>
@@ -100,6 +106,10 @@ export default class SearchArrSys extends Vue {
     // Debounce the search input change handler
     debouncedSearchInputChanged = debounce(this.searchInputChanged, 300);
 
+    public isXS() {
+        return window.innerWidth < 782;
+    }
+
     public clickBlog(blog: any) {
         if(blog.site_type == 'arrangement') {
             window.location.href = blog.siteUrl+'/wp-admin/';
@@ -151,7 +161,6 @@ export default class SearchArrSys extends Vue {
         var response = spaInteraction.runAjaxCall('/', 'POST', data);
     }
 
-    
     public async searchInputChanged() {
         this.resetSearch();
         if( this.searchInput.length < 3 ) {
@@ -197,10 +206,17 @@ export default class SearchArrSys extends Vue {
         this.results = [];
         this.omrader = [];
         this.blogs = [];
+        if(this.isXS()) {
+            this.active = false;
+        }
     };
 
     public hasResults() {
         return this.results.length > 0 || this.omrader.length > 0 || this.blogs.length > 0;
+    }
+    
+    public openSearchXS() {
+        this.active = !this.active;
     }
 }
 </script>
@@ -211,6 +227,11 @@ export default class SearchArrSys extends Vue {
 }
 #wpadminbar .quicklinks .ab-empty-item {
     background: transparent !important;
+}
+#wp-admin-bar-search-arrangorsystemet {
+    display: inline !important;
+    height: 35px !important;
+    z-index: 999999 !important;
 }
 </style>
 
@@ -270,6 +291,11 @@ export default class SearchArrSys extends Vue {
     z-index: 9999999;
     max-height: 70vh;
     overflow-y: auto !important;
+    width: calc(100% - 16px) !important;
+    top: 34px !important;
+    margin: 8px !important;
+    left: 0 !important;
+    right: 0 !important;
 }
 .result-item {
     padding: calc(var(--initial-space-box)*2) !important;
@@ -324,4 +350,46 @@ export default class SearchArrSys extends Vue {
     border-radius: 50% !important;
     background: var(--color-primary-grey-light) !important;
 }
+.search-xs-btn {
+    display: none !important;
+}
+@media screen and (max-width: 782px) {
+    .button-icon {
+        right: 15px;
+        top: 0;   
+    }
+    .main-div {
+        display: block !important;
+        width: 100% !important;
+    }
+    .main-div.active {
+        position: fixed !important;
+        left: 0;
+        right: 0;
+        top: -1px;
+        width: 100% !important;
+        background: #fff !important;
+        padding-top: var(--initial-space-box) !important;
+        padding-bottom: var(--initial-space-box) !important;
+    }
+    .search-xs-btn {
+        display: flex !important;
+    }
+    .search-btn,
+    .main-div.active .search-div .button-icon .search-xs-btn,
+    .main-div .search-div .search-input-arr-sys {
+        display: none !important;
+    }
+    .main-div.active .search-div {
+        width: 100% !important;
+        padding: 0 !important;
+    }
+    .main-div.active .search-div .search-input-arr-sys {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 var(--initial-space-box) !important;
+    }
+}
+
+
 </style>
